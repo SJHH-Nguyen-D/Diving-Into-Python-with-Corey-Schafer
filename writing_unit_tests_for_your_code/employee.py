@@ -1,8 +1,11 @@
 import requests
 
+<<<<<<< HEAD
 class Employee():	
+=======
+class Employee():
+>>>>>>> 127c6c57686d95ac80fb811aa750727e3a136371
 	""" A sample Employee class """
-
 	raise_amt = 1.05
 
 	def __init__(self, first, last, pay):
@@ -26,6 +29,7 @@ class Employee():
 	def apply_raise(self):
 		''' Update the pay amount by a percentage '''
 		self.pay = int(self.pay * raise_amt)
+<<<<<<< HEAD
 
 
 '''
@@ -53,11 +57,26 @@ and whether the response was not okay. We can do this by importing a method from
 			response.raise_for_status()
 		except Exception as exc:
 			print("There was a problem: \n{}".format(exc))
+=======
+	
+	def monthly_schedule(self, month):
+		''' Goes to a website to fetch a monthly schedule for the employee '''
+		response = requests.get(f"https://company.com/{self.last}/{month}")
+		
+		try:
+			response.raise_for_status()
+		except Exception as exc:
+			print("There was a problem: {}".format(exc))
+>>>>>>> 127c6c57686d95ac80fb811aa750727e3a136371
 
 		if response.ok:
 			return response.text
 		else:
+<<<<<<< HEAD
 			return "Bad Response!"
 
 
 		
+=======
+			return "Bad Response!"
+>>>>>>> 127c6c57686d95ac80fb811aa750727e3a136371
