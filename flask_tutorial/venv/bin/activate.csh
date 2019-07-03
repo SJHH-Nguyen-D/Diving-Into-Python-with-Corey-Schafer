@@ -8,7 +8,7 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
-setenv VIRTUAL_ENV "/home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/flask_tutorial/venv"
+setenv VIRTUAL_ENV "/home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/flask_tutorial/venv"
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"
