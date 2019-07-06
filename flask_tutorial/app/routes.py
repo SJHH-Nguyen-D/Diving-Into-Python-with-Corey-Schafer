@@ -61,6 +61,7 @@ def logout():
 	logout_user()
 	return redirect(url_for("index"))
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     ''' registration form view '''
@@ -81,3 +82,18 @@ def register():
 
     # display the registration.html template
     return render_template("register.html", title="Register", form=form)
+
+
+@app.route("/user/<username>")
+@login_required
+def user(username):
+    """ user profile view function """
+
+    user = User.query.filter_by(username=username).first_or_404()
+    
+    # mock posts
+    posts = [ \
+    {"author": user, "body": "Test post #1"},
+    {"author": user, "body": "Test post #2"}
+    ]
+    return render_template("user.html", user=user, posts=posts)
