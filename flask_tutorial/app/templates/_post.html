@@ -1,0 +1,8 @@
+<!-- Sub-template that displays the user's username, display picture, as well as a comment they made, as a small sub-display, for each comment/post they make. -->
+
+<table>
+	<tr valign="top">
+		<td>img src="{{ post.author.avatar(36) }}"</td>
+		<td>{{ post.author.username }} says:<br>{{ post.body }}</td>
+	</tr>
+</table>
