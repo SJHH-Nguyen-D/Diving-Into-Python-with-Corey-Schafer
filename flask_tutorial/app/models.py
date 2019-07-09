@@ -14,6 +14,7 @@ migration commands at the command line with:
 This only works when all the scripts are in running order.
 """
 
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -40,12 +41,14 @@ class User(UserMixin, db.Model):
     def avatar(self, size):
         """ generate avatar for user profile """
 
-        # the md5 email hashing functions reads bytes instead of string, 
+        # the md5 email hashing functions reads bytes instead of string,
         # and expects lower so we apply lower() and encode("utf-8") first
         digest = md5(self.email.lower().encode("utf-8")).hexdigest()
         # the ?s= string value argument dictates the size of the image
         return "https://www.gravatar.com/avatar/{}?d=identicon&s={}".format(
-            digest, size)
+            digest, size
+        )
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)

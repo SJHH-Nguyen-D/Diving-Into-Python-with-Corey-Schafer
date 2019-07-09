@@ -3,6 +3,7 @@ from wtforms import TextAreaField, StringField, PasswordField, BooleanField, Sub
 from wtforms.validators import DataRequired, EqualTo, Email, Length, ValidationError
 from app.models import User
 
+
 class LoginForm(FlaskForm):
     """ Form class users use to login to their account """
 
@@ -38,6 +39,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError(
                 "This email has already been registered. Please try another email address."
             )
+
 
 class EditProfileForm(FlaskForm):
     """ Form view for useres to edit their profiles """
