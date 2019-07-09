@@ -12,4 +12,4 @@ login = LoginManager(app)
 # function name for the login view is provided value
 login.login_view = "login" 
 
-from app import routes, models
+from app import routes, models, errors

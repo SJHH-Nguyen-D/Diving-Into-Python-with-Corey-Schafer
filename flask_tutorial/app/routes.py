@@ -1,9 +1,10 @@
-from app import app
+from app import app, db
 from flask import render_template, flash, redirect, url_for, request
 from app.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
+from datetime import datetime
 
 
 @app.route("/")
@@ -11,19 +12,26 @@ from werkzeug.urls import url_parse
 
 @login_required
 def index():
-    # ...
+    """ Home Page view function """
+    user = {'username': current_user.username}
+    posts = [
+        {
+            'author': {'username': 'John'},
+            'body': 'Beautiful day in Portland!'
+        },
+        {
+            'author': {'username': 'Susan'},
+            'body': 'The Avengers movie was so cool!'
+        }
+    ]
     return render_template("index.html", title='Home Page', posts=posts)
 
 
 @app.route("/login", methods=["GET", "POST"]) # GET and POST type requests are allowed
 def login():
-	''' user login function '''
-
-    # Scenario 1: If logged in send to home page
-	if current_user.is_authenticated:
+    """ Login View Function """
+    if current_user.is_authenticated == True:
         return redirect(url_for('index'))
-
-	# Scenario 2: Check to see if the log-in process was successful
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -43,7 +51,7 @@ def login():
     	# if trying to access a page that is protected by the login view, will be redirected to index. A query string "?next=/next_page" 
     	# will be added to the url so that it's "/login?next=index" The next query string argument is set to the original URL so the application
     	# can use that to redirect back after login After the login, the value of the next query string is obtained
-    	next_page = requests.args.get("next")
+    	next_page = request.args.get("next")
 
     	# checks whether or not the next argument is a relative path within the application website
     	if not next_page or url_parse(next_page).netloc != '':
