@@ -4,7 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 import logging
-from logging.handlers import SMTPHandler
+from logging.handlers import SMTPHandler, RotatingFileHandler
+import os
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -33,5 +34,22 @@ if not app.debug:
 			)
 		mail_handler.setLevel(logging.ERROR)
 		app.logger.addHandler(mail_handler)
+
+	# use the RotatingFileHandler as there are some failure
+	# condittions that do not end in a Python excerption, but helps
+	# with debugging purposes in the long run
+	maxbytes = 10240 # 10Kbs
+	num_logs_keep = 10
+	if not os.path.exists("logs"):
+		os.mkdir("logs")
+	file_handler = RotatingFileHandler("logs/microblog.log", maxBytes=maxbytes,
+		backupCount=num_logs_keep)
+	file_handler.setFormatter(logging.Formatter(
+		"%(asctime)s %(levelname)s: %(message)s [in %(pathname)s%(lineno)d]"))
+	file_handler.setLevel(logging.INFO)
+	app.logger.addHandler(file_handler)
+
+	app.logger.setLevel(logging.INFO)
+	app.logger.info("Microblog startup")
 
 from app import routes, models, errors

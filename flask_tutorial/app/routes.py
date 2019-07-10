@@ -118,7 +118,7 @@ def before_request():
 def edit_profile():
     """ Edit Profile view function: Routes users to the edit profile form view """
 
-    form = EditProfileForm()
+    form = EditProfileForm(original_username=current_user.username)
     # if the  form is validated on submission,
     if form.validate_on_submit():
         # copy the form into the User database object
