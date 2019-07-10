@@ -16,8 +16,11 @@ def index():
     posts = [
         {"author": {"username": "John"}, "body": "Beautiful day in Portland!"},
         {"author": {"username": "Susan"}, "body": "The Avengers movie was so cool!"},
-        {"author": {"username": "Jaime"}, "body": "Y'know, the Game of Thrones ending really squandered all the efforts of the \
-        previous seasons and it's such a shame that it had to be that way...smh."}
+        {
+            "author": {"username": "Jaime"},
+            "body": "Y'know, the Game of Thrones ending really squandered all the efforts of the \
+        previous seasons and it's such a shame that it had to be that way...smh.",
+        },
     ]
     return render_template("index.html", title="Home Page", posts=posts)
 
