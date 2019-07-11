@@ -1,28 +1,35 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, PostForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, Post
 from werkzeug.urls import url_parse
 from datetime import datetime
 
 
-@app.route("/")
-@app.route("/index")
+@app.route("/", methods=["GET", "POST"])
+@app.route("/index", methods=["GET", "POST"])
 @login_required
 def index():
-    """ Home Page view function """
-    user = {"username": current_user.username}
-    posts = [
-        {"author": {"username": "John"}, "body": "Beautiful day in Portland!"},
-        {"author": {"username": "Susan"}, "body": "The Avengers movie was so cool!"},
-        {
-            "author": {"username": "Jaime"},
-            "body": "Y'know, the Game of Thrones ending really squandered all the efforts of the \
-        previous seasons and it's such a shame that it had to be that way...smh.",
-        },
-    ]
-    return render_template("index.html", title="Home Page", posts=posts)
+    """ Home Page view function, where you can see posts and make
+    posts of your own. """
+    form = PostForm()
+    if form.validate_on_submit():
+        post.Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.comit()
+        flash("Your post is now live!")
+        # we use the simple Post/Redirect/Get pattern trick to avoid
+        # inserting duplicate posts when a user inadvertently refreshes the page
+        # after submitting a webform.
+        return redirect(url_for("index"))
+    post = current_user.followed_posts().all()
+
+    return render_template(
+        "index.html", 
+        title="Home Page", 
+        posts=posts
+        )
 
 
 @app.route("/login", methods=["GET", "POST"])  # GET and POST type requests are allowed
