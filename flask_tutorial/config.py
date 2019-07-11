@@ -21,3 +21,5 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     # these list of admins will receive the error report
     ADMINS = ["dennisnguyendo@gmail.com"]
+    # smaller numbers in dev; larger numbers in production
+    POSTS_PER_PAGE = 3

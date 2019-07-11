@@ -23,7 +23,7 @@ def index():
         # inserting duplicate posts when a user inadvertently refreshes the page
         # after submitting a webform.
         return redirect(url_for("index"))
-    post = current_user.followed_posts().all()
+    posts = current_user.followed_posts().all()
 
     return render_template(
         "index.html", 
@@ -142,6 +142,7 @@ def edit_profile():
     elif request.method == "GET":
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
+    
     return render_template("edit_profile.html", title="Edit Profile", form=form)
 
 @app.route("/follow/<username>")
@@ -179,3 +180,13 @@ def unfollow(username):
     db.session.commit()
     flash("You are no longer following {}".format(username))
     return redirect(url_for("user", username=username))
+
+@app.route("/explore")
+def explore():
+    """ view function display global stream of posts from other users
+    for the current user to view and explore """
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    # similar to the main page but does not include the form argument
+    # this is to prevent your from posting on on someone elses website
+    return render_template("index.html", title="Explore", posts=posts)
+
