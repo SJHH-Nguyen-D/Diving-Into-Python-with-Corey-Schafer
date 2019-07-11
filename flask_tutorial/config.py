@@ -22,4 +22,4 @@ class Config(object):
     # these list of admins will receive the error report
     ADMINS = ["dennisnguyendo@gmail.com"]
     # smaller numbers in dev; larger numbers in production
-    POSTS_PER_PAGE = 10
+    POSTS_PER_PAGE = 25

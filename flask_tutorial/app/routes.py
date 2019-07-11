@@ -24,22 +24,21 @@ def index():
         # after submitting a webform.
         return redirect(url_for("index"))
 
-    # pagination of posts on the front page of all posts 
+    # pagination of posts on the front page of all posts
     # of users current_user is following, including own,
     # ordered retro-chronoclogically
     page = requests.args.get("page", 1, type=int)
-    
+
     # load N posts per page using pagination
     posts = current_user.followed_posts().paginate(
-        page, app.config["POSTS_PER_PAGE"], False)
+        page, app.config["POSTS_PER_PAGE"], False
+    )
 
     # previous page url
-    prev_url = url_for("index", page=posts.prev_num) \
-        if posts.has_prev else None
+    prev_url = url_for("index", page=posts.prev_num) if posts.has_prev else None
 
     # next page url
-    next_url = url_for("index", page=posts.next_num) \
-        if posts.has_next else None
+    next_url = url_for("index", page=posts.next_num) if posts.has_next else None
 
     return render_template(
         "index.html",
@@ -47,8 +46,8 @@ def index():
         form=form,
         posts=posts.items,
         prev_url=prev_url,
-        next_url=next_url
-        )
+        next_url=next_url,
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])  # GET and POST type requests are allowed
@@ -120,15 +119,28 @@ def register():
 @login_required
 def user(username):
     """ user profile view function. current contains mock data """
-
     user = User.query.filter_by(username=username).first_or_404()
 
-    # mock posts
-    posts = [
-        {"author": user, "body": "Test post #1"},
-        {"author": user, "body": "Test post #2"},
-    ]
-    return render_template("user.html", user=user, posts=posts)
+    # pagination on teh User Profile Page
+    page = request.args.get("page", 1, type=int)
+    posts = user.posts.order_by(Post.timestamp.desc()).paginate(
+        page, app.config["POSTS_PER_PAGE"], False
+    )
+    prev_url = (
+        url_for("user", username=user.username, page=posts.prev_num)
+        if posts.has_next
+        else None
+    )
+
+    next_url = (
+        url_for("user", username=user.username, page=posts.next_num)
+        if posts.has_prev
+        else None
+    )
+
+    return render_template(
+        "user.html", user=user, posts=postsitems, next_url=next_url, prev_url=prev_url
+    )
 
 
 @app.before_request
@@ -161,8 +173,9 @@ def edit_profile():
     elif request.method == "GET":
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    
+
     return render_template("edit_profile.html", title="Edit Profile", form=form)
+
 
 @app.route("/follow/<username>")
 @login_required
@@ -200,6 +213,7 @@ def unfollow(username):
     flash("You are no longer following {}".format(username))
     return redirect(url_for("user", username=username))
 
+
 @app.route("/explore")
 def explore():
     """ view function display global stream of posts from other users
@@ -208,20 +222,17 @@ def explore():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     # similar to the main page but does not include the form argument
     # this is to prevent your from posting on on someone elses website
-    
+
     # previous page url
-    prev_url = url_for("index", page=posts.prev_num) \
-        if posts.has_prev else None
+    prev_url = url_for("index", page=posts.prev_num) if posts.has_prev else None
 
     # next page url
-    next_url = url_for("index", page=posts.next_num) \
-        if posts.has_next else None
+    next_url = url_for("index", page=posts.next_num) if posts.has_next else None
 
     return render_template(
-        "index.html", 
-        title="Explore", 
-        posts=posts.items, 
-        prev_url=prev_url, 
-        next_url=next_url
-        )
-
+        "index.html",
+        title="Explore",
+        posts=posts.items,
+        prev_url=prev_url,
+        next_url=next_url,
+    )
