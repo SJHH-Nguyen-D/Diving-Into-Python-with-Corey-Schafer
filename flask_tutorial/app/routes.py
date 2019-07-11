@@ -28,13 +28,26 @@ def index():
     # of users current_user is following, including own,
     # ordered retro-chronoclogically
     page = requests.args.get("page", 1, type=int)
+    
+    # load N posts per page using pagination
     posts = current_user.followed_posts().paginate(
         page, app.config["POSTS_PER_PAGE"], False)
 
+    # previous page url
+    prev_url = url_for("index", page=posts.prev_num) \
+        if posts.has_prev else None
+
+    # next page url
+    next_url = url_for("index", page=posts.next_num) \
+        if posts.has_next else None
+
     return render_template(
-        "index.html", 
-        title="Home Page", 
-        posts=posts.items
+        "index.html",
+        title="Home",
+        form=form,
+        posts=posts.items,
+        prev_url=prev_url,
+        next_url=next_url
         )
 
 
@@ -195,5 +208,20 @@ def explore():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     # similar to the main page but does not include the form argument
     # this is to prevent your from posting on on someone elses website
-    return render_template("index.html", title="Explore", posts=posts.items)
+    
+    # previous page url
+    prev_url = url_for("index", page=posts.prev_num) \
+        if posts.has_prev else None
+
+    # next page url
+    next_url = url_for("index", page=posts.next_num) \
+        if posts.has_next else None
+
+    return render_template(
+        "index.html", 
+        title="Explore", 
+        posts=posts.items, 
+        prev_url=prev_url, 
+        next_url=next_url
+        )
 
