@@ -23,12 +23,18 @@ def index():
         # inserting duplicate posts when a user inadvertently refreshes the page
         # after submitting a webform.
         return redirect(url_for("index"))
-    posts = current_user.followed_posts().all()
+
+    # pagination of posts on the front page of all posts 
+    # of users current_user is following, including own,
+    # ordered retro-chronoclogically
+    page = requests.args.get("page", 1, type=int)
+    posts = current_user.followed_posts().paginate(
+        page, app.config["POSTS_PER_PAGE"], False)
 
     return render_template(
         "index.html", 
         title="Home Page", 
-        posts=posts
+        posts=posts.items
         )
 
 
@@ -185,8 +191,9 @@ def unfollow(username):
 def explore():
     """ view function display global stream of posts from other users
     for the current user to view and explore """
+    page = requests.args.get("page", 1, type=int)
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     # similar to the main page but does not include the form argument
     # this is to prevent your from posting on on someone elses website
-    return render_template("index.html", title="Explore", posts=posts)
+    return render_template("index.html", title="Explore", posts=posts.items)
 
