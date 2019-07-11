@@ -23,3 +23,4 @@ class Config(object):
     ADMINS = ["dennisnguyendo@gmail.com"]
     # smaller numbers in dev; larger numbers in production
     POSTS_PER_PAGE = 25
+    SECURITY_EMAIL_SENDER = 'dennisnguyendo@gmail.com'

@@ -1,9 +1,11 @@
-from app import db
+from app import db, login, app
 from app import login
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from hashlib import md5
+from time import time
+import jwt
 
 """
 Every time there is a change to the database models, it is important to run the database
@@ -90,6 +92,31 @@ class User(UserMixin, db.Model):
         own = Post.query.filter_by(user_id=self.id)
         # return sorted list of posts
         return followed.union(own).order_by(Post.timestamp.desc())
+
+    def get_reset_password_token(self, expires_in=600):
+        """ generate a password token for resetting the password with an 
+        expiration time of 10 minutes """
+        return jwt.encode(
+            {"reset_password": self.id, "exp": time() + expires_in},
+            app.config["SECRET_KEY"], 
+            algorithm="HS256"
+            ).decode("utf-8")
+
+
+    @staticmethod
+    # static method means that it can be invoked directly from the class
+    # similar to class methods, however it does not receive the class (cls)
+    # as the first argument
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, app.config["SECRET_KEY"],
+                algorithms=["HS256"])["reset_password"]
+        except:
+            return # return None to the caller
+        # if the token is valid, then the value of the reset_password key
+        # from the token's payload is the ID of the user, so I can load
+        # the user and return it
+        return User.query.get(id)
 
 
 class Post(db.Model):

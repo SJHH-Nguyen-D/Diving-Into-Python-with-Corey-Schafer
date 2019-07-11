@@ -1,4 +1,4 @@
-2019-07-11 00:19:48,972 ERROR: Exception on / [GET] [in /usr/local/lib/python3.6/dist-packages/flask/app.py1761]
+2019-07-11 13:51:17,079 ERROR: Exception on / [GET] [in /usr/local/lib/python3.6/dist-packages/flask/app.py1761]
 Traceback (most recent call last):
   File "/home/dennis/.local/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1244, in _execute_context
     cursor, statement, parameters, context
@@ -21,7 +21,7 @@ Traceback (most recent call last):
     rv = self.preprocess_request()
   File "/usr/local/lib/python3.6/dist-packages/flask/app.py", line 2087, in preprocess_request
     rv = func()
-  File "/home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/flask_tutorial/app/routes.py", line 120, in before_request
+  File "/home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/flask_tutorial/app/routes.py", line 151, in before_request
     if current_user.is_authenticated:
   File "/home/dennis/.local/lib/python3.6/site-packages/werkzeug/local.py", line 347, in __getattr__
     return getattr(self._get_current_object(), name)
@@ -31,8 +31,10 @@ Traceback (most recent call last):
     current_user = LocalProxy(lambda: _get_user())
   File "/home/dennis/.local/lib/python3.6/site-packages/flask_login/utils.py", line 335, in _get_user
     current_app.login_manager._load_user()
-  File "/home/dennis/.local/lib/python3.6/site-packages/flask_login/login_manager.py", line 359, in _load_user
-    return self.reload_user()
+  File "/home/dennis/.local/lib/python3.6/site-packages/flask_login/login_manager.py", line 353, in _load_user
+    return self._load_from_cookie(request.cookies[cookie_name])
+  File "/home/dennis/.local/lib/python3.6/site-packages/flask_login/login_manager.py", line 392, in _load_from_cookie
+    self.reload_user()
   File "/home/dennis/.local/lib/python3.6/site-packages/flask_login/login_manager.py", line 321, in reload_user
     user = self.user_callback(user_id)
   File "/home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/flask_tutorial/app/models.py", line 20, in load_user
@@ -75,3 +77,6 @@ FROM user
 WHERE user.id = ?]
 [parameters: (1,)]
 (Background on this error at: http://sqlalche.me/e/e3q8)
+2019-07-11 13:52:04,177 INFO: Microblog startup [in /home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/flask_tutorial/app/__init__.py60]
+2019-07-11 15:21:43,933 INFO: Microblog startup [in /home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/flask_tutorial/app/__init__.py60]
+2019-07-11 15:21:57,081 INFO: Microblog startup [in /home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/flask_tutorial/app/__init__.py60]
