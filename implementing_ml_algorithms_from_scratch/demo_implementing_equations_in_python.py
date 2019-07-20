@@ -196,19 +196,6 @@ def root_mean_squared_error(actual, predicted):
     return math.sqrt(mean_error)
 
 
-def evaluate_SLR(dataset, algorithm):
-    test_set = list()
-    for row in dataset:
-        row_copy = list(row)
-        row_copy[-1] = None
-        test_set.append(row_copy)
-    predicted = algorithm(dataset, test_set)
-    print(predicted)
-    actual = [row[-1] for row in dataset]
-    rmse = root_mean_squared_error(actual, predicted)
-    return rmse
-
-
 # test simple linear regression
 dog_weights_train = [4.5, 3.5, 11.1, 3.4, 2.3]
 
@@ -306,47 +293,4 @@ ax.set(
 )
 plt.grid()
 # plt.show()
-
-
-######################################################################
-############### Naive Bayes Classifier ###############################
-######################################################################
-
-def naive_bayes_classification():
-    pass
-
-######################################################################
-############### Decision Tree Classifier #############################
-######################################################################
-
-def decision_tree_classifier():
-    pass
-
-######################################################################
-############### Random Forest Classifier #############################
-######################################################################
-
-def random_forest_classificatiion():
-    pass
-
-######################################################################
-############### Support Vector Machine Regressor #####################
-######################################################################
-
-def svm_regression():
-    pass
-
-######################################################################
-############### Support Vector Machine Classifier ####################
-######################################################################
-
-def svm_classification():
-    pass
-
-######################################################################
-############### Adaboost Classification ##############################
-######################################################################
-
-def adaboost_classification():
-    pass
 
