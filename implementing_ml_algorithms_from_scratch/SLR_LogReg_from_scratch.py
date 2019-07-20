@@ -7,7 +7,8 @@ import math
 from sklearn import datasets
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd 
+import pandas as pd
+
 
 def average(X):
     """ The average function without the looping and indexing through a list"""
@@ -17,12 +18,15 @@ def average(X):
     res = res / len(X)
     return res
 
+
 def variance(values):
     return sum([(x - average(values)) ** 2 for x in values]) / len(values)
+
 
 def std_dev(X):
     """ standard deviation implementation dependent on the variance calculation """
     return math.sqrt(variance(X))
+
 
 def covariance(X, Y):
     """ Covariance is a generatlization of correlation. Correlation describes the relationship between 
@@ -46,8 +50,10 @@ def intercept(X, Y):
     return average(Y) - coeff(X, Y) * average(X)
 
 
-def simple_linear_regression(X_train, X_test, y_train, y_test, random_error=np.random.random()):
-    """ Simple Linear Regression function """
+def simple_linear_regression(
+    X_train, X_test, y_train, y_test, random_error=np.random.random()
+):
+    """ Simple Linear Regression function is a univariate regressor"""
     y_pred = np.empty(shape=len(y_test))
 
     b0, b1 = intercept(X_train, y_train), coeff(X_train, y_train)
@@ -124,24 +130,29 @@ print("RMSE between the predicted and actual dog_weights is : {0:.3f}\n".format(
 # plt.show()
 
 
-# Simple Linear Regression with a UCR dataset
+# Multiple Linear Regression with a UCR dataset
 diabetes = datasets.load_diabetes()
 X = diabetes.data
 y = diabetes.target
+diabetes_df = pd.DataFrame(np.c_[diabetes["data"], diabetes["target"]])
+
+print(diabetes_df.head())
 
 from sklearn.model_selection import train_test_split
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
 
 print("Shape of X_train: {}\nShape of X_test: {}\n".format(X_train.shape, X_test.shape))
 print("Shape of y_train: {}\nShape of y_test: {}\n".format(y_train.shape, y_test.shape))
 
-# THIS BREAKS THE COMPUTER
-# y_pred = simple_linear_regression(X_train, X_test, y_train, y_test, random_error=np.random.rand(1))
 
 # # evaluating the performance of the SLR
 rmse = root_mean_squared_error(y_test, y_pred)
-print("RMSE between the predicted and actual diabetes ratings is : {0:.3f}\n".format(rmse))
+print(
+    "RMSE between the predicted and actual diabetes ratings is : {0:.3f}\n".format(rmse)
+)
 
 # # Plotting the actual vs. the predicted values of the dog weights
 # fig, ax = plt.subplots()
@@ -159,33 +170,72 @@ print("RMSE between the predicted and actual diabetes ratings is : {0:.3f}\n".fo
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 # Sklearn's Implementation of Linear Regression #
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-from sklearn.linear_model import LinearRegression 
-from pprint import pprint
 
+from sklearn.linear_model import LinearRegression
+from pprint import pprint
+from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, confusion_matrix
+from sklearn.model_selection import GridSearchCV, cross_val_score, KFold
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+import warnings
+
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+ss = StandardScaler()
 lm = LinearRegression().fit(X_train, y_train)
 y_pred = lm.predict(X_test)
 
-df_slr_results = pd.DataFrame({"Actual Value": y_test.flatten(), "Predicted Value": y_pred})
-print(df_slr_results.head())
 
-print("SKLEARN's linear model scoring on the diabetes dataset: {}\n".format(lm.score(X_test, y_test)))
+df_slr_results = pd.DataFrame(
+    {"Actual Value": y_test.flatten(), "Predicted Value": y_pred}
+)
+print(
+    "SKLEARN's linear regression OOTB predictions vs actual diabetes value...\n{}\n".format(
+        df_slr_results.head()
+    )
+)
+
+
+print(
+    "SKLEARN's linear model OOTB scoring on the diabetes dataset: {}\n".format(
+        lm.score(X_test, y_test)
+    )
+)
+
+
+# CROSS VALIDATION
+k_fold = KFold(n_splits=10)
+# you can see how the data are split for the k_fold splits
+# for train_indices, val_indices in k_fold.split(X_train):
+#     print("Train: {} |\n\n Validation: {}\n".format(train_indices, val_indices))
+
+
+# STORING SCORES OF CROSS VALIDATION
+scores = cross_val_score(lm, X_train, y_train, cv=k_fold, n_jobs=-1, scoring='r2')
+model_names = [
+"model0","model1", "model2", "model3", "model4", 
+"model5", "model6", "model7", "model8", "model9"
+]
+lm_scores_df = pd.DataFrame({"ModelID": model_names, "R^2 Score": scores})
+print(lm_scores_df.head(10))
+
+# MODEL COEFFICIENTS OF BEST MODEL
 pprint("These are the weights from the linear model\n{}\n".format(lm.coef_))
 
-from sklearn.preprocessing import StandardScaler
-ss = StandardScaler()
-diabetes_df = pd.DataFrame(diabete)
-diabetes_df.head()
 
 ######################################################################
-############### Logistic Regression Classifier ######################
+############### Logistic Regression Classifier #######################
 ######################################################################
 ######################################################################
+
 
 def factorial(n):
-	res = 1
-	for i in range(1, n+1):
-		res = res + i
-	return res
+    res = 1
+    for i in range(1, n + 1):
+        res = res + i
+    return res
+
 
 def e():
     """ Euler's number is defined as 
@@ -196,7 +246,10 @@ def e():
         res = res + (1 / factorial(n))
     return res
 
+
+print("\n")
 print("This is euler's number: {}".format(e()))
+print("This is the real euler's number: {}\n".format(math.e))
 
 
 def sigmoid(y):
@@ -219,7 +272,7 @@ ax.grid()
 
 def logistic_error_function(X, Y):
     """ 
-	logistic error function for Bernoulli/Binary outcome classification:
+	logistic error function for Bernoulli/Binary outcome classification
 	"""
     j_theta = 0
     for x, y in zip(X, Y):
@@ -231,31 +284,68 @@ def logistic_error_function(X, Y):
 
 
 def logistic_regression(X_train, X_test, Y_train, Y_test):
-    """ Logit Link Function """
-    # sigmoid function
+    """ 
+    Logit Link Function which is a univariate regressor extension of the previously 
+    built simple linear univariate regression
+    """
     prob_a = sigmoid(simple_linear_regression(X_train, X_test, Y_train, Y_test))
     return prob_a
 
 
-prob_a = logistic_regression(dog_heights_train, dog_heights_test, dog_weights_train, dog_weights_test)
+prob_a = logistic_regression(
+    dog_heights_train, dog_heights_test, dog_weights_train, dog_weights_test
+)
 print("This is the output of the logistic regression model:\n{}".format(prob_a))
 
-# fig, ax = plt.subplots()
-# ax.plot(dog_heights_test, dog_weights_test)
-# ax.plot(dog_heights_test, prob_a)
-# ax.plot(dog_heights_test, y_pred)
-# ax.set(
-#     xlabel="Dog heights (cm)",
-#     ylabel="Dog weights (kg)",
-#     title="Dog heights vs weights predictions",
-# )
-# plt.grid()
-# plt.show()
 
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+# Sklearn's Implementation of Logistic Regression #
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.decomposition import PCA
 
 # Logistic Regression Classification with UCR dataset
 iris = datasets.load_iris()
 X = iris.data
 y = iris.target
 names = iris.target_names
+iris_df = pd.DataFrame(
+    np.c_[iris["data"], iris["target"]], columns=iris["feature_names"] + ["target"]
+)
 
+print(iris_df.head())
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=123
+)
+
+logistic_regressor = LogisticRegression(penalty="l1", warm_start=True).fit(X_train, y_train)
+
+# scores = cross_val_score(logistic_regressor, X_train, y_train, cv=10)
+# print(scores)
+
+# conf_mat = confusion_matrix(y_test, y_pred, labels=list[iris_df.target.unique()])
+# print(conf_mat)
+
+# HYPER PARAMETER OPTIMIZATION
+param_grid = {
+    "C":[0.01, 0.1, 0.5, 0.8, 1.0],
+    "penalty":["l1", "l2"],
+    "class_weight":[None, "balanced"],
+    "warm_start": [True, False]
+}
+
+####### Available Methods for Logistic Regressor #######
+# Types of fitting
+# .fit, .fit_predict, .fit_transform
+
+# Types of scoring
+# .predict, .predict_proba, .predict_log_proba, .score
+
+####### Available Attributes for Logistic Regressor #######
+# Types of attributes
+# .coef_, .intercept_
+
+grid = GridSearchCV(logistic_regressor, param_grid=param_grid, scoring="accuracy", cv=10).fit(X_train, y_train)
+y_pred = grid.predict(X_test)
