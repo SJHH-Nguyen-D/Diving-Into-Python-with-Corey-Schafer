@@ -12,12 +12,15 @@ sklearn.datasets.
 #####################################################
 
 import numpy as np 
-import pandas as pd 
+import pandas as pd
+import matplotlib.pyplot as plt 
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix, roc_auc_score
 from sklearn.model_selection import GridSearchCV, KFold, cross_val_score, train_test_split
 from sklearn.decomposition import PCA
+from sklearn.pipeline import Pipeline
 import warnings
+
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
  
@@ -26,8 +29,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 # singular models & multi-class classifier
 from sklearn.linear_model import LogisticRegression, RidgeClassifier, Perceptron, SGDClassifier
 from sklearn.naive_bayes import BernoulliNB, GaussianNB
-from sklearn.tree import DecisionTreeClassifier, ExtraTreesClassifier
-from sklearn.neigbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import LinearSVC 
 from sklearn.neural_network import MLPClassifier
 from sklearn.gaussian_process import GaussianProcessClassifier
@@ -52,6 +55,11 @@ iris = pd.DataFrame(
 print("Iris Dataset")
 print(iris.head())
 
+plt.figure()
+plt.title("Iris Parallel Coordinates Plot")
+pd.plotting.parallel_coordinates(iris, 'target')
+plt.show()
+
 # Wine Dataset
 wine = load_wine()
 wine = pd.DataFrame(
@@ -60,6 +68,11 @@ wine = pd.DataFrame(
 print("Wine Dataset")
 print(wine.head())
 
+plt.figure()
+plt.title("wine Parallel Coordinates Plot")
+pd.plotting.parallel_coordinates(wine, 'target')
+plt.show()
+
 # Breast Cancer Dataset
 breast_cancer = load_breast_cancer()
 breast_cancer = pd.DataFrame(
@@ -67,6 +80,11 @@ breast_cancer = pd.DataFrame(
 )
 print("Breast cancer Dataset")
 print(breast_cancer.head())
+
+plt.figure()
+plt.title("Iris Parallel Coordinates Plot")
+pd.plotting.parallel_coordinates(iris_df, 'target')
+plt.show()
 
 # Digits Dataset
 digits = load_digits()
@@ -85,7 +103,7 @@ print(digits.head())
 log_reg = LogisticRegression(multi_class="multinomial")
 linear_svc = LinearSVC(multi_class="crammer_singer")
 
-pipeline = Pipeline()
+# pipeline = Pipeline()
 
 
 #####################################################
@@ -97,19 +115,47 @@ pipeline = Pipeline()
 #####################################################
 ##### Tabulating Performance of Classifiers #########
 #####################################################
-"""
-Metrics to include:
-* run time
-* complexity
-* hyperparameters/model capacity
-* model_name
-* accuracy/error
-* roc_auc
-* sensitivity
-* specificity
-* TP/TN, FP/FN
-* F1 score
-"""
+from sklearn.linear_model import LogisticRegression, RidgeClassifier, Perceptron, SGDClassifier
+from sklearn.naive_bayes import BernoulliNB, GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import LinearSVC 
+from sklearn.neural_network import MLPClassifier
+from sklearn.gaussian_process import GaussianProcessClassifier
+
+
+# ensemble models & multi-class classifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, VotingClassifier
+
+
+model_names = [
+"Logistic Regression", "RidgeClassifier", "Perception", "SGDClassifier", 
+"GaussianNB", "Decision Tree", "K-NN Classifier", "Linear SVC", "MLP Classifier", 
+"Gaussian Process Classifier", "Random Forest", "Gradient Boosted Classifier", 
+"AdaBoost Classifier", "Voting Classifier"
+]
+
+dataset_names = ["Iris", "Wine", "Breast Cancer", "Digits"]
+
+results_df = pd.DataFrame(
+	{
+	"model_name": model_names,
+	"dataset_name": model_names,
+	"num_params": model_names,
+	"best_params": model_names,
+	"sensitivity": model_names,
+	"specificity": model_names,
+	"precision":model_names,
+	"recall": model_names,
+	"f1-score": model_names,
+	"runtime":model_names,
+	"accuracy":model_names,
+	"roc_auc":model_names,
+	}
+)
+
+print(results_df.head())
+
 
 #####################################################
 ##### Plotting Performance of Classifiers #########

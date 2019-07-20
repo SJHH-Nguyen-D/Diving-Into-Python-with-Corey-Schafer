@@ -23,18 +23,11 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Import models
 # singular models
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Perceptron, Ridge, SGDRegressor, Lasso, BayesianRidge
 from sklearn.svm import SVR
-stochastic gradient descent regression
-perceptron
-bayesian regression
-OLS regression
-ridge regression
-lasso regression 
 
 # ensemble models
-gradient tree boosting
-voting regressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 
 #####################################################
 ################ LOAD DATASETS ######################
@@ -75,7 +68,7 @@ print(linnerud.head())
 # only on the feature variables
 
 
-pipeline = Pipeline()
+# pipeline = Pipeline()
 
 
 #####################################################
@@ -87,19 +80,27 @@ pipeline = Pipeline()
 #####################################################
 ##### Tabulating Performance of Classifiers #########
 #####################################################
-"""
-Metrics to include:
-* run time
-* complexity
-* hyperparameters/model capacity
-* model_name
-* accuracy/error
-* roc_auc
-* sensitivity
-* specificity
-* TP/TN, FP/FN
-* F1 score
-"""
+
+model_names = [
+"Linear Regression", "Ridge Regression", "Lasso Regression", "SGD Regressor", 
+"Bayesian Ridge", "SVR",  "Gradient Tree Boosting Regressor","Random Forest Regressor"
+]
+
+dataset_names = ["Boston", "Diabetes", "linnerud"]
+
+results_df = pd.DataFrame(
+	{
+	"model_name": model_names,
+	"dataset_name": model_names,
+	"num_params": model_names,
+	"best_params": model_names,
+	"runtime":model_names,
+	"rmse":model_names,
+	"r^2": model_names
+	}
+)
+
+print(results_df.head(10))
 
 #####################################################
 ##### Plotting Performance of Classifiers #########

@@ -212,7 +212,7 @@ k_fold = KFold(n_splits=10)
 
 
 # STORING SCORES OF CROSS VALIDATION
-scores = cross_val_score(lm, X_train, y_train, cv=k_fold, n_jobs=-1, scoring='r2')
+scores = cross_val_score(lm, X_train, y_train, cv=k_fold, scoring='r2')
 model_names = [
 "model0","model1", "model2", "model3", "model4", 
 "model5", "model6", "model7", "model8", "model9"
@@ -314,7 +314,6 @@ iris_df = pd.DataFrame(
     np.c_[iris["data"], iris["target"]], columns=iris["feature_names"] + ["target"]
 )
 
-print(iris_df.head())
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=123
@@ -322,11 +321,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 logistic_regressor = LogisticRegression(penalty="l1", warm_start=True).fit(X_train, y_train)
 
-# scores = cross_val_score(logistic_regressor, X_train, y_train, cv=10)
-# print(scores)
-
-# conf_mat = confusion_matrix(y_test, y_pred, labels=list[iris_df.target.unique()])
-# print(conf_mat)
+scores = cross_val_score(logistic_regressor, X_train, y_train, cv=10)
+print(scores)
 
 # HYPER PARAMETER OPTIMIZATION
 param_grid = {
@@ -349,3 +345,31 @@ param_grid = {
 
 grid = GridSearchCV(logistic_regressor, param_grid=param_grid, scoring="accuracy", cv=10).fit(X_train, y_train)
 y_pred = grid.predict(X_test)
+print("These are the predicted labels of the logistic regression classifier\n{}\n".format(y_pred))
+prob_y_pred = grid.predict_proba(X_test)
+max_prob_y_pred = [max(i) for i in prob_y_pred]
+print("These are the predicted probabilities of the logistic regression classifier\n{}\n".format(prob_y_pred))
+
+c_mat = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix\n{}\n".format(c_mat))
+
+import os
+if not os.path.exists("./model_results"):
+    os.mkdir("./model_results")
+
+log_reg_results_df = pd.DataFrame(
+    {
+    "Groud Truth Label": y_test,
+    "Predicted Label": y_pred, 
+    "Predicted Probability": max_prob_y_pred
+    }
+)
+
+log_reg_results_df.to_csv(path_or_buf="./model_results/log_reg_results.csv")
+
+pprint(grid.grid_scores_)
+
+plt.figure()
+plt.title("Iris Parallel Coordinates Plot")
+pd.plotting.parallel_coordinates(iris_df, 'target')
+plt.show()
