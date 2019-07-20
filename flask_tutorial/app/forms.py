@@ -42,7 +42,7 @@ class RegistrationForm(FlaskForm):
 
 
 class EditProfileForm(FlaskForm):
-    """ Form view for useres to edit their profiles """
+    """ Form view for users to edit their profiles """
 
     username = StringField("Username", validators=[DataRequired()])
     about_me = TextAreaField("About me", validators=[Length(min=0, max=140)])
@@ -60,4 +60,17 @@ class EditProfileForm(FlaskForm):
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
                 raise ValidationError("Please use a different name.")
+
+
+class PostForm(FlaskForm):
+    """ Form view for users to type in new posts """
+    post = TextAreaField("Say anything", validators=[DataRequired(), Length(min=1, max=140)])
+    submit = SubmitField("Submit")
+
+
+class ResetPasswordForm(FlaskForm):
+    """ Password reset form """
+    password = PasswordField("Password", validators=[DataRequired()])
+    password2 = PasswordField("Repeat Password", validators=[DataRequired(), EqualTo("password")])
+    submit = SubmitField("Request Password Reset")
 
