@@ -28,6 +28,13 @@ class User(UserMixin, db.Model):
     posts = db.relationship("Post", backref="author", lazy="dynamic")
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    followed = de.relationship(
+        "User", secondary=followers,
+        primaryjoin=(followers.c.folloewr_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref("followers", lazy="dynamic"),
+        lazy="dynamic"
+        )
 
     def __repr__(self):
         return "<User {}>".format(self.username)
@@ -58,3 +65,14 @@ class Post(db.Model):
 
     def __repr__(self):
         return "<Post {}>".format(self.body)
+
+
+# manifesting the followers self-referential many-to-many relationship is 
+# a association relationship table. The FKs in this table are both pointing at entries in the user table,
+# since it is linking users to users
+followers = db.Table(
+    "followers",
+    db.Column("following_id", db.Integer, db.ForeignKey("user.id")),
+    db.Column("followed_id", db.Integer, db.ForeignKey("user.id"))
+    )
+
