@@ -367,9 +367,9 @@ log_reg_results_df = pd.DataFrame(
 
 log_reg_results_df.to_csv(path_or_buf="./model_results/log_reg_results.csv")
 
-pprint(grid.grid_scores_)
 
 plt.figure()
 plt.title("Iris Parallel Coordinates Plot")
 pd.plotting.parallel_coordinates(iris_df, 'target')
+plt.legend()
 plt.show()
