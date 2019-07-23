@@ -88,7 +88,6 @@ wine = pd.DataFrame(
 wine["target"] = wine["target"].astype("int")
 print("Wine Dataset")
 print(wine.keys())
-print(wine.target.value_counts())
 
 
 # Breast Cancer Dataset
@@ -233,342 +232,211 @@ ax.w_zaxis.set_ticklabels([])
 
 # plt.show()
 
-#####################################################
-#################### EXPLORE ########################
-#####################################################
-
-# wine['quality'].describe()
-
-# filter function
-# def is_tasty(wine_quality):
-# 	if wine_quality>=7:
-# 		return 1
-# 	else:
-# 		return 0
-
-# wine['tasty'] = wine['quality'].apply(is_tasty)
 
 #####################################################
-#################### SPLITTING ######################
+######### SPLITTING, MODELING, REPORTING ############
 #####################################################
 
-iris_X_train, iris_X_test, iris_y_train, iris_y_test = train_test_split(
-    iris.iloc[:, :-1].values, iris["target"].values, test_size=0.3, random_state=47
-)
-
-wine_X_train, wine_X_test, wine_y_train, wine_y_test = train_test_split(
-    wine.iloc[:, :-1].values, wine["target"].values, test_size=0.3, random_state=47
-)
-
-#####################################################
-#################### SANDBOX ########################
-#####################################################
-
-#@@@@@@@@@@@@@@@@@ IRIS DATASET @@@@@@@@@@@@@@@@@@@@@
-
-# Decision Tree Classifier
-decisiontreeclassifier = DecisionTreeClassifier(
-    max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
-)
-
-iris_y_pred = decisiontreeclassifier.fit(iris_X_train, iris_y_train).predict(
-    iris_X_test
-)
-decisiontreeclassifier_performance = precision_recall_fscore_support(
-    iris_y_test, iris_y_pred
-)
-decisiontreeclassifier_performance_conf_mat = confusion_matrix(iris_y_test, iris_y_pred)
-decisiontreeclassifierscores = accuracy_score(iris_y_test, iris_y_pred)
 
 precision_recall_f1_support = ["Precision", "Recall", "F-Score", "Support"]
-print("Decision Tree Performance Chart\n")
-for metric, result in zip(precision_recall_f1_support,decisiontreeclassifier_performance):
-    print("{}: {}".format(metric, result))
-print("\n")
 
-print(
-    "Decision Tree Classifier Confusion Matrix\n{}\n".format(
-        decisiontreeclassifier_performance_conf_mat
-    )
-)
-print(
-    "Decision Tree Classifier Accuracy Score: {}\n".format(decisiontreeclassifierscores)
-)
+datasets = {"Iris": iris, "Wine": wine}
 
-iris_feature_columns = list(iris.columns[iris.columns != "target"])
+classifiers = {
+    "tree": {
+        "Decision Tree Classifier": DecisionTreeClassifier(
+            max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
+        ),
+        "Gradient Boosting Classifier": GradientBoostingClassifier(
+            max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
+        ),
+        "Random Forest Classifier": RandomForestClassifier(
+            max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
+        ),
+        "AdaBoost Classifier": AdaBoostClassifier(),
+    },
+    "linear_model": {
+        "Logistic Regression": LogisticRegression(),
+        "Ridge Classifier": RidgeClassifier(),
+        "Perceptron": Perceptron(),
+        "SGD Classifier": SGDClassifier(),
+    },
+    "probabilistic": {"Gaussian Naive Bayes": GaussianNB(), "Bernoulli Naive Bayes": BernoulliNB()},
+    "distance_based": {
+        "SVC": LinearSVC(),
+        "K-Nearest Neighbours": KNeighborsClassifier(n_neighbors=3),
+    },
+}
 
 # Feature Importance Ordering Functions
 def get_key(feature_importance_pair):
     """ helper function to sort by highest feature importances """
     return feature_importance_pair[1]
 
-def model_feature_importance(features, treemodel, reverse=True):
+
+def model_feature_importance(feature_columns, treemodel, reverse=True):
     """ prints out the feature importances for a tree model in descending order """
-    sorted_featured_importance = sorted(list(zip(features, treemodel.feature_importances_)),
-        key=get_key,
-        reverse=reverse)
+    tup_list = list(zip(feature_columns, treemodel.feature_importances_))
+    sorted_featured_importance = sorted(tup_list, key=get_key, reverse=reverse)
     for feature_importance_pair in sorted_featured_importance:
         print(feature_importance_pair)
 
-print("Decision Tree Feature Importances\n{}\n".format(
-    model_feature_importance(iris_feature_columns, decisiontreeclassifier, reverse=True))
-)
 
-### Gradient Boosting Classifier ###
-gradientboostingclassifier = GradientBoostingClassifier(
-    max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
-)
+def report_model_report(dataset_df, tree_classifiers):
+    """ run all the models at once and report on the results
+    TODO: extend this to loop over a set of dataset and classifiers, and takes them as lists for the
+    arguments
 
-iris_y_pred = gradientboostingclassifier.fit(iris_X_train, iris_y_train).predict(
-    iris_X_test
-)
-gradientboostingclassifier_performance = precision_recall_fscore_support(
-    iris_y_test, iris_y_pred
-)
-gradientboostingclassifier_performance_conf_mat = confusion_matrix(
-    iris_y_test, iris_y_pred
-)
-gradientboostingclassifier_scores = accuracy_score(iris_y_test, iris_y_pred)
+    TODO: make pipeline object that fits scalers for each classifier that is 
+    """
+    # list constant
+    precision_recall_f1_support = ["Precision", "Recall", "F-Score", "Support"]
 
+    for dataset_name, dataset_dataframe in dataset_df.items():
+        print("##### {} DATASET MODELING #####\n".format(dataset_name.upper()))
+        # feature and target splitting
+        feature_columns = list(
+            dataset_dataframe.columns[dataset_dataframe.columns != "target"]
+        )
+        target_col = dataset_dataframe.columns[dataset_dataframe.columns == "target"]
+        X = dataset_dataframe[feature_columns].values
+        y = dataset_dataframe[target_col].values
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.3, random_state=47
+        )
 
-print("Gradient Boosting Classifier Importances\n{}\n".format(
-    model_feature_importance(iris_feature_columns, gradientboostingclassifier, reverse=True))
-)
+        # modeling and reporting
+        for model_category, clf_model in classifiers.items():
+            # Tree-Based Models
+            if model_category == "tree":
+                print("##### {} MODELS #####\n".format(model_category.upper()))
+                for clf_name, model in clf_model.items():
+                    print("##### {} Performance report on the {} Dataset #####\n".format(clf_name, dataset_name))
 
-print("Gradient Boosting Classifier Performance Chart\n")
-for metric, result in zip(precision_recall_f1_support, gradientboostingclassifier_performance):
-    print("{}: {}".format(metric, result))
-print("\n")
+                    # fit and make inference
+                    y_pred = model.fit(X_train, y_train).predict(X_test)
 
-print(
-    "Gradient Boosting Classifier Confusion Matrix\n{}\n".format(
-        gradientboostingclassifier_performance_conf_mat
-    )
-)
-print(
-    "Gradient Boosting Classifier Accuracy Score: {}\n".format(
-        gradientboostingclassifier_scores
-    )
-)
+                    # reporting
+                    print("{} Performance Chart\n".format(clf_name))
+                    for metric, result in zip(
+                        precision_recall_f1_support,
+                        precision_recall_fscore_support(y_test, y_pred),
+                    ):
+                        print("{}: {}".format(metric, result))
+                    print("\n")
 
-### Random Forest Classifier ###
-randomforestclassifier = RandomForestClassifier(
-    max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
-)
+                    print(
+                        "{} Confusion Matrix\n{}\n".format(
+                            clf_name, confusion_matrix(y_test, y_pred)
+                        )
+                    )
 
-iris_y_pred = randomforestclassifier.fit(iris_X_train, iris_y_train).predict(
-    iris_X_test
-)
-randomforestclassifier_performance = precision_recall_fscore_support(
-    iris_y_test, iris_y_pred
-)
-randomforestclassifier_conf_mat = confusion_matrix(iris_y_test, iris_y_pred)
-randomforestclassifier_scores = accuracy_score(iris_y_test, iris_y_pred)
+                    print(
+                        "{} Accuracy Score: {}\n".format(
+                            clf_name, accuracy_score(y_test, y_pred)
+                        )
+                    )
 
+                    print("{} Feature Importance\n".format(clf_name))
+                    print(model_feature_importance(feature_columns, model, reverse=True))
+                    print("\n")
 
-print("Random Forest Classifier Importances\n{}\n".format(
-    model_feature_importance(iris_feature_columns, randomforestclassifier, reverse=True))
-)
+            # Distance Based Models
+            elif model_category == "distance_based":
+                print("##### {} MODELS #####\n".format(model_category.upper()))
+                for clf_name, model in clf_model.items():
+                    print("##### {} Performance report on the {} Dataset #####\n".format(clf_name, dataset_name))
 
+                    # fit and make inference
+                    y_pred = model.fit(X_train, y_train).predict(X_test)
 
-print("Random Forest Classifier Performance Chart\n")
-for metric, result in zip(precision_recall_f1_support, randomforestclassifier_performance):
-    print("{}: {}".format(metric, result))
-print("\n")
+                    # reporting
+                    print("{} Performance Chart\n".format(clf_name))
+                    for metric, result in zip(
+                        precision_recall_f1_support,
+                        precision_recall_fscore_support(y_test, y_pred),
+                    ):
+                        print("{}: {}".format(metric, result))
+                    print("\n")
 
+                    print(
+                        "{} Confusion Matrix\n{}\n".format(
+                            clf_name, confusion_matrix(y_test, y_pred)
+                        )
+                    )
 
-print("Random Forest Confusion Matrix\n{}\n".format(randomforestclassifier_conf_mat))
-print(
-    "Random Forest Classifier Accuracy Score: {}\n".format(
-        randomforestclassifier_scores
-    )
-)
+                    print(
+                        "{} Accuracy Score: {}\n".format(
+                            clf_name, accuracy_score(y_test, y_pred)
+                        )
+                    )
 
-### AdaBoost Classifier ###
-adaboostclassifier = AdaBoostClassifier()
+            # Linear Models
+            elif model_category == "linear_model":
+                print("##### {} MODELS #####\n".format(model_category.upper()))
+                for clf_name, model in clf_model.items():
+                    print("##### {} Performance report on the {} Dataset #####\n".format(clf_name, dataset_name))
 
-iris_y_pred = adaboostclassifier.fit(iris_X_train, iris_y_train).predict(
-    iris_X_test
-)
-adaboostclassifier_performance = precision_recall_fscore_support(
-    iris_y_test, iris_y_pred
-)
-adaboostclassifier_conf_mat = confusion_matrix(iris_y_test, iris_y_pred)
-adaboostclassifier_scores = accuracy_score(iris_y_test, iris_y_pred)
+                    # fit and make inference
+                    y_pred = model.fit(X_train, y_train).predict(X_test)
 
+                    # reporting
+                    print("{} Performance Chart\n".format(clf_name))
+                    for metric, result in zip(
+                        precision_recall_f1_support,
+                        precision_recall_fscore_support(y_test, y_pred),
+                    ):
+                        print("{}: {}".format(metric, result))
+                    print("\n")
 
-print("AdaBoost Classifier Importances\n{}\n".format(
-    model_feature_importance(iris_feature_columns, adaboostclassifier, reverse=True))
-)
+                    print(
+                        "{} Confusion Matrix\n{}\n".format(
+                            clf_name, confusion_matrix(y_test, y_pred)
+                        )
+                    )
 
-print("AdaBoost Classifier Performance Chart\n")
-for metric, result in zip(precision_recall_f1_support, adaboostclassifier_performance):
-    print("{}: {}".format(metric, result))
-print("\n")
+                    print(
+                        "{} Accuracy Score: {}\n".format(
+                            clf_name, accuracy_score(y_test, y_pred)
+                        )
+                    )
+            # Probabilistic  Models
+            elif model_category == "probabilistic":
+                print("##### {} MODELS #####\n".format(model_category.upper()))
+                for clf_name, model in clf_model.items():
+                    print("##### {} Performance report on the {} Dataset #####\n".format(clf_name, dataset_name))
 
+                    # fit and make inference
+                    y_pred = model.fit(X_train, y_train).predict(X_test)
 
-print("AdaBoost Confusion Matrix\n{}\n".format(adaboostclassifier_conf_mat))
-print(
-    "AdaBoost Classifier Accuracy Score: {}\n".format(
-        adaboostclassifier_scores
-    )
-)
+                    # reporting
+                    print("{} Performance Chart\n".format(clf_name))
+                    for metric, result in zip(
+                        precision_recall_f1_support,
+                        precision_recall_fscore_support(y_test, y_pred),
+                    ):
+                        print("{}: {}".format(metric, result))
+                    print("\n")
 
-#@@@@@@@@@@@@@@@@@ WINE DATASET @@@@@@@@@@@@@@@@@@@@@
+                    print(
+                        "{} Confusion Matrix\n{}\n".format(
+                            clf_name, confusion_matrix(y_test, y_pred)
+                        )
+                    )
 
-decisiontreeclassifier = DecisionTreeClassifier(
-    max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
-)
+                    print(
+                        "{} Accuracy Score: {}\n".format(
+                            clf_name, accuracy_score(y_test, y_pred)
+                        )
+                    )
 
-wine_y_pred = decisiontreeclassifier.fit(wine_X_train, wine_y_train).predict(
-    wine_X_test
-)
-decisiontreeclassifier_performance = precision_recall_fscore_support(
-    wine_y_test, wine_y_pred
-)
-decisiontreeclassifier_performance_conf_mat = confusion_matrix(wine_y_test, wine_y_pred)
-decisiontreeclassifierscores = accuracy_score(wine_y_test, wine_y_pred)
+"""
+NOTES:
 
-pprint(
-    "Decision Tree Classifier Performance\nPrecision: {}\nRecall: {}\nF-Score: {}\nSupport: {}\n\n".format(
-        decisiontreeclassifier_performance[0],
-        decisiontreeclassifier_performance[1],
-        decisiontreeclassifier_performance[2],
-        decisiontreeclassifier_performance[3],
-    )
-)
-print(
-    "Decision Tree Classifier Confusion Matrix\n{}\n".format(
-        decisiontreeclassifier_performance_conf_mat
-    )
-)
-print(
-    "Decision Tree Classifier Accuracy Score: {}\n".format(decisiontreeclassifierscores)
-)
+decisiontreeclassifier attributes
+feature_importances_, max_features, n_features, n_classes, n_outputs, classes_, tree_
 
-print(decisiontreeclassifier.feature_importances_)
-
-wine_feature_columns = list(wine.columns[wine.columns != "target"])
-
-print("Decision Tree Classifier Feature Importance\n")
-for feature, importance in zip(wine_feature_columns, decisiontreeclassifier.feature_importances_):
-    print("{}: {}".format(feature,importance))
-print("\n")
-
-
-# Gradient Boosting Classifier
-gradientboostingclassifier = GradientBoostingClassifier(
-    max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
-)
-
-wine_y_pred = gradientboostingclassifier.fit(wine_X_train, wine_y_train).predict(
-    wine_X_test
-)
-gradientboostingclassifier_performance = precision_recall_fscore_support(
-    wine_y_test, wine_y_pred
-)
-gradientboostingclassifier_performance_conf_mat = confusion_matrix(
-    wine_y_test, wine_y_pred
-)
-gradientboostingclassifier_scores = accuracy_score(wine_y_test, wine_y_pred)
-
-print("Gradient Boosting Classifier Feature Importance\n")
-for feature, importance in zip(wine_feature_columns, gradientboostingclassifier.feature_importances_):
-    print("{}: {}".format(feature,importance))
-print("\n")
-
-
-pprint(
-    "Gradient Boosting Classifier Performance\nPrecision: {}\nRecall: {}\nF-Score: {}\nSupport: {}\n\n".format(
-        gradientboostingclassifier_performance[0],
-        gradientboostingclassifier_performance[1],
-        gradientboostingclassifier_performance[2],
-        gradientboostingclassifier_performance[3],
-    )
-)
-print(
-    "Gradient Boosting Classifier Confusion Matrix\n{}\n".format(
-        gradientboostingclassifier_performance_conf_mat
-    )
-)
-print(
-    "Gradient Boosting Classifier Accuracy Score: {}\n".format(
-        gradientboostingclassifier_scores
-    )
-)
-
-# Random Forest Classifier
-randomforestclassifier = RandomForestClassifier(
-    max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
-)
-
-wine_y_pred = randomforestclassifier.fit(wine_X_train, wine_y_train).predict(
-    wine_X_test
-)
-randomforestclassifier_performance = precision_recall_fscore_support(
-    wine_y_test, wine_y_pred
-)
-randomforestclassifier_conf_mat = confusion_matrix(wine_y_test, wine_y_pred)
-randomforestclassifier_scores = accuracy_score(wine_y_test, wine_y_pred)
-
-print("Random Forest Classifier Feature Importance\n")
-for feature, importance in zip(wine_feature_columns, randomforestclassifier.feature_importances_):
-    print("{}: {}".format(feature,importance))
-print("\n")
-
-
-pprint(
-    "Random Forest Classifier Performance\nPrecision: {}\nRecall: {}\nF-Score: {}\nSupport: {}\n\n".format(
-        randomforestclassifier_performance[0],
-        randomforestclassifier_performance[1],
-        randomforestclassifier_performance[2],
-        randomforestclassifier_performance[3],
-    )
-)
-print("Random Forest Confusion Matrix\n{}\n".format(randomforestclassifier_conf_mat))
-print(
-    "Random Forest Classifier Accuracy Score: {}\n".format(
-        randomforestclassifier_scores
-    )
-)
-
-# AdaBoost Classifier
-adaboostclassifier = AdaBoostClassifier()
-
-wine_y_pred = adaboostclassifier.fit(wine_X_train, wine_y_train).predict(
-    wine_X_test
-)
-adaboostclassifier_performance = precision_recall_fscore_support(
-    wine_y_test, wine_y_pred
-)
-adaboostclassifier_conf_mat = confusion_matrix(wine_y_test, wine_y_pred)
-adaboostclassifier_scores = accuracy_score(wine_y_test, wine_y_pred)
-
-print("AdaBoost Classifier Feature Importance\n")
-for feature, importance in zip(wine_feature_columns, adaboostclassifier.feature_importances_):
-    print("{}: {}".format(feature,importance))
-print("\n")
-
-
-pprint(
-    "AdaBoost Classifier Performance\nPrecision: {}\nRecall: {}\nF-Score: {}\nSupport: {}\n\n".format(
-        adaboostclassifier_performance[0],
-        adaboostclassifier_performance[1],
-        adaboostclassifier_performance[2],
-        adaboostclassifier_performance[3],
-    )
-)
-print("AdaBoost Confusion Matrix\n{}\n".format(adaboostclassifier_conf_mat))
-print(
-    "AdaBoost Classifier Accuracy Score: {}\n".format(
-        adaboostclassifier_scores
-    )
-)
-
-
-# decisiontreeclassifier attributes
-# feature_importances_, max_features, n_features, n_classes, n_outputs, classes_, tree_
-
+"""
 
 #####################################################
 #################### PIPELINE #######################
@@ -685,3 +553,6 @@ results_df = pd.DataFrame(
 """
 Same as metrics to tabulate
 """
+
+if __name__ == "__main__":
+    report_model_report(datasets, classifiers)
