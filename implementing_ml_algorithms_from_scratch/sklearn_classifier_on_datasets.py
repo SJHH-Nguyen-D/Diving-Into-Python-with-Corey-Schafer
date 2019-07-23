@@ -10,8 +10,8 @@ sklearn.datasets.
 #####################################################
 ################ IMPORT #############################
 #####################################################
-
 import numpy as np
+import os
 import pandas as pd
 from pprint import pprint
 import matplotlib.pyplot as plt
@@ -34,61 +34,21 @@ import warnings
 import GPyOpt  # for across model global bayesian optimization
 from mpl_toolkits.mplot3d import Axes3D
 
+from sklearn_classifier_constants import *
+
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
-# import models
-# singular models & multi-class classifier
-from sklearn.linear_model import (
-    LogisticRegression,
-    RidgeClassifier,
-    Perceptron,
-    SGDClassifier,
-)
-from sklearn.naive_bayes import BernoulliNB, GaussianNB
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import LinearSVC
-from sklearn.neural_network import MLPClassifier
-from sklearn.gaussian_process import GaussianProcessClassifier
-
-
-# ensemble models & multi-class classifier
-from sklearn.ensemble import (
-    RandomForestClassifier,
-    GradientBoostingClassifier,
-    AdaBoostClassifier,
-    VotingClassifier,
-)
-
+def create_model_results_directory():
+    if not os.path.exists("./model_results"):
+        os.mkdir("./model_results")
 
 #####################################################
 ################ LOAD DATASETS ######################
 #####################################################
 
-
 from sklearn.datasets import *
-
-# Iris Dataset
-iris = load_iris()
-iris = pd.DataFrame(
-    data=np.c_[iris["data"], iris["target"]], columns=iris["feature_names"] + ["target"]
-)
-iris["target"] = iris["target"].astype("int")
-print("Iris Dataset")
-print(iris.keys())
-
-
-# Wine Dataset
-wine = load_wine()
-wine = pd.DataFrame(
-    data=np.c_[wine["data"], wine["target"]], columns=wine["feature_names"] + ["target"]
-)
-wine["target"] = wine["target"].astype("int")
-print("Wine Dataset")
-print(wine.keys())
-
 
 # Breast Cancer Dataset
 breast_cancer = load_breast_cancer()
@@ -238,36 +198,6 @@ ax.w_zaxis.set_ticklabels([])
 #####################################################
 
 
-precision_recall_f1_support = ["Precision", "Recall", "F-Score", "Support"]
-
-datasets = {"Iris": iris, "Wine": wine}
-
-classifiers = {
-    "tree": {
-        "Decision Tree Classifier": DecisionTreeClassifier(
-            max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
-        ),
-        "Gradient Boosting Classifier": GradientBoostingClassifier(
-            max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
-        ),
-        "Random Forest Classifier": RandomForestClassifier(
-            max_depth=5, min_samples_split=10, random_state=123, max_leaf_nodes=5
-        ),
-        "AdaBoost Classifier": AdaBoostClassifier(),
-    },
-    "linear_model": {
-        "Logistic Regression": LogisticRegression(),
-        "Ridge Classifier": RidgeClassifier(),
-        "Perceptron": Perceptron(),
-        "SGD Classifier": SGDClassifier(),
-    },
-    "probabilistic": {"Gaussian Naive Bayes": GaussianNB(), "Bernoulli Naive Bayes": BernoulliNB()},
-    "distance_based": {
-        "SVC": LinearSVC(),
-        "K-Nearest Neighbours": KNeighborsClassifier(n_neighbors=3),
-    },
-}
-
 # Feature Importance Ordering Functions
 def get_key(feature_importance_pair):
     """ helper function to sort by highest feature importances """
@@ -281,6 +211,34 @@ def model_feature_importance(feature_columns, treemodel, reverse=True):
     for feature_importance_pair in sorted_featured_importance:
         print(feature_importance_pair)
 
+def write_out_perf_stats():
+    print("##### {} MODELS #####\n".format(model_category.upper()))
+    for clf_name, model in clf_model.items():
+    print("##### {} Performance report on the {} Dataset #####\n".format(clf_name, dataset_name))
+
+    # fit and make inference
+    y_pred = model.fit(X_train, y_train).predict(X_test)
+
+    # reporting
+    print("{} Performance Chart\n".format(clf_name))
+    for metric, result in zip(
+        precision_recall_f1_support,
+        precision_recall_fscore_support(y_test, y_pred),
+    ):
+        print("{}: {}".format(metric, result))
+    print("\n")
+
+    print(
+        "{} Confusion Matrix\n{}\n".format(
+            clf_name, confusion_matrix(y_test, y_pred)
+        )
+    )
+
+    print(
+        "{} Accuracy Score: {}\n".format(
+            clf_name, accuracy_score(y_test, y_pred)
+        )
+    )
 
 def report_model_report(dataset_df, tree_classifiers):
     """ run all the models at once and report on the results
@@ -290,23 +248,25 @@ def report_model_report(dataset_df, tree_classifiers):
     TODO: make pipeline object that fits scalers for each classifier that is 
     """
     # list constant
-    precision_recall_f1_support = ["Precision", "Recall", "F-Score", "Support"]
 
-    for dataset_name, dataset_dataframe in dataset_df.items():
+    precision_recall_f1_support = ["Precision", "Recall", "F-Score", "Support"]
+    model_performances = []
+
+    for dataset_name, df in dataset_df.items():
         print("##### {} DATASET MODELING #####\n".format(dataset_name.upper()))
         # feature and target splitting
         feature_columns = list(
-            dataset_dataframe.columns[dataset_dataframe.columns != "target"]
+            df.columns[df.columns != "target"]
         )
-        target_col = dataset_dataframe.columns[dataset_dataframe.columns == "target"]
-        X = dataset_dataframe[feature_columns].values
-        y = dataset_dataframe[target_col].values
+        target_col = df.columns[df.columns == "target"]
+        X = df[feature_columns].values
+        y = df[target_col].values
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.3, random_state=47
         )
 
         # modeling and reporting
-        for model_category, clf_model in classifiers.items():
+        for model_category, clf_model in CLASSIFIERS.items():
             # Tree-Based Models
             if model_category == "tree":
                 print("##### {} MODELS #####\n".format(model_category.upper()))
@@ -454,7 +414,6 @@ SVC
 KNN
 """
 
-
 # Classifiers that are invariant to feature scaling, but might benefit from feature scaling
 """
 Naive Bayes
@@ -462,17 +421,6 @@ Decision Trees
 XGBoost
 Random Forest Classifier
 Fisher LDA"""
-
-#
-# If you need a label binarizer, you can add that in there too
-# pipeline = Pipeline(
-# {
-# "scaler": StandardScaler(),
-# "estimator": DecisionTreeClassifier()
-# }
-# )
-# y_pred = pipeline.fit(X_train).predict(X_train))
-# y_pred = pipeline.predict(X_test)
 
 
 #####################################################
@@ -484,48 +432,7 @@ Fisher LDA"""
 ##### Tabulating Performance of Classifiers #########
 #####################################################
 
-"""from sklearn.linear_model import (
-    LogisticRegression,
-    RidgeClassifier,
-    Perceptron,
-    SGDClassifier,
-)
-from sklearn.naive_bayes import BernoulliNB, GaussianNB
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import LinearSVC
-from sklearn.neural_network import MLPClassifier
-from sklearn.gaussian_process import GaussianProcessClassifier
-
-
-# ensemble models & multi-class classifier
-from sklearn.ensemble import (
-    RandomForestClassifier,
-    GradientBoostingClassifier,
-    AdaBoostClassifier,
-    VotingClassifier,
-)"""
-
-
-model_names = [
-    "Logistic Regression",
-    "Ridge Classifier",
-    "Perception",
-    "SGD Classifier",
-    "GaussianNB",
-    "Decision Tree",
-    "K-NN Classifier",
-    "Linear SVC",
-    "MLP Classifier",
-    "Gaussian Process Classifier",
-    "Random Forest",
-    "Gradient Boosted Classifier",
-    "AdaBoost Classifier",
-    "Voting Classifier",
-]
-
-dataset_names = ["Iris", "Wine", "Breast Cancer", "Digits"]
-
+model_names = [model for _, model_tup in CLASSIFIERS.items() for model, _ in model_tup.items()]
 
 results_df = pd.DataFrame(
     {
@@ -545,7 +452,10 @@ results_df = pd.DataFrame(
 )
 
 # print(results_df.head())
+# results_df.to_csv
 
+def report_performances():
+    pass
 
 #####################################################
 ##### Plotting Performance of Classifiers #########
@@ -555,4 +465,5 @@ Same as metrics to tabulate
 """
 
 if __name__ == "__main__":
-    report_model_report(datasets, classifiers)
+    create_model_results_directory()
+    report_model_report(DATASETS, CLASSIFIERS)
