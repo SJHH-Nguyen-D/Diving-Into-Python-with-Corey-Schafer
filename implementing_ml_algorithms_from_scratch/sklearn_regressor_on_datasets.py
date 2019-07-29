@@ -75,6 +75,8 @@ print(linnerud.head())
 ##### CROSS VALIDATING CLASSIFIER PERFORMANCE #######
 #####################################################
 
+print(help(Ridge))
+# ridge_reg = Ridge("l1")
 
 
 #####################################################

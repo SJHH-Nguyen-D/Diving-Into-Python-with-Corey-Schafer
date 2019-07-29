@@ -25,7 +25,7 @@ subprocess.run("ls -alt", shell=True) # you can use shell=True
 subprocess.run(["ls", "-alt"])
 
 # we can get the arguments that were passed in as part of the original command with the .args function
-a = subprocess.run(["ls", "-alt"])
+a = subprocess.run(["ls", "-alt"], capture_output=True)
 print(a.args)
 # we can also see if we get any errors from the function by looking at the return code. 0 means exited without any issues.
 print(a.returncode)
@@ -33,8 +33,9 @@ print(a.returncode)
 # you can also grab the standard output of the function
 # the reason we are getting back none as a result is that is is just sending the standard out to the console
 print(a.stdout) # we get back None as a result
+print(a.stdout.decode())
 
 # if we want to capture the output of this function, we will have to pass into the function, a special argument to indicate
 # that we want to capture the output of this function
-z = subprocess.run(["ls", "-alt"], stdout="PIPE") # for some reason, I am getting expected argument error
-print(z)
+# z = subprocess.run(["ls", "-alt"], stdout="PIPE") # for some reason, I am getting expected argument error
+# print(z)

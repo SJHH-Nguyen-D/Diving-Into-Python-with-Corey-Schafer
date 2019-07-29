@@ -106,3 +106,18 @@ print("This is the result of using" \
 	" that this solution is much more elegant "\
 	"than the first method".format(product))
 
+
+import math
+
+a = [1, 2, 3, 4, 5]
+print(sum(a))
+
+z = sum(map(lambda x: x**2, a))
+print(z)
+
+for i in a:
+	e = 0
+	print(i**2)
+
+h = [1,4,9,16,25]
+print(sum(h))
