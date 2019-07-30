@@ -121,3 +121,10 @@ for i in a:
 
 h = [1,4,9,16,25]
 print(sum(h))
+
+# selecting the minimum quantities from iterables
+print("This is the sum of list a: {}".format(sum(a)))
+print("This is the sum of list h: {}".format(sum(h)))
+print("This is the min values: {}".format(min([sum(a), sum(h)])))
+
+print("This is the min values: {}".format(min(sum(a), sum(h))))

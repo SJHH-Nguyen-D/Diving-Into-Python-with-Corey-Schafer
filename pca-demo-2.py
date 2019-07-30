@@ -4,82 +4,29 @@ import pandas as pd
 import math
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 
-
-def average(x):
-    """ x is a collection of numbers """
-    return sum(x) / len(x)
-
-
-def standardize(x):
-    """ we center the data around mean 0, std dev 1 """
-    a = math.sqrt(b ** 2 + c ** 2)
-    a = a / a
-    b = b / a
-    c = c / a
-    return a, b, c
-
-
-def svd(x):
-    return
-
-
-def eigenvalues(distances):
-    eigenvalues = sum(map(lambda x: x ** 2, distances))
-    return eigenvalues
-
-
-def pc_variance(eigenvalues, n_samples):
-    pc_variance = eigenvalues / (n_samples - 1)
-    return pc_variance
-
-
-def total_variance(pc_variances):
-    return sum(pc_variances)
-
-
-def scree_plot(data, distances):
-    """ plots the variance contribution that each principal component accounts for
-	in terms of the total amount of variance """
-    for i in distances:
-        ev = eigenvalues(i)
-        pc_var_contribution = pc_variance(ev) / total_variance(pc_variances)
-        plt.plot(pc_var_contribution)
-
-    plt.show()
-
-
-# load data
-data = load_iris()
-df = pd.DataFrame(
-    np.c_[data["data"], data["target"]], columns=data["feature_names"] + ["target"]
-)
-
+wine = load_wine()
+cancer = load_breast_cancer()
+boston = load_boston()
+df = pd.DataFrame(wine.data, columns=wine.feature_names)
+df["target"] = pd.Series(wine.target)
 feature_columns = df.columns[df.columns != "target"]
+
 df = df[feature_columns]
 
-# prep pca
+# prep pca with a standard scaler to centre the data around the origin
 ss = StandardScaler()
 scaled_data = ss.fit_transform(df)
-print(type(scaled_data))
-print(scaled_data)
 
 
-# max allowed PCs is the minimum between num_features and num_obs
+# fit transform PCA object
 pca = PCA(n_components=min(df.shape[0], df.shape[1]))
-
-# calculate loading scores and the variation each PC accounts for
 pca.fit(scaled_data)
-
-# generate coordinates for a PCA graph based on the loading scores and the scaled data
-# loading scores * scaled data
 pca_data = pca.transform(scaled_data)
 
-# before we do a scree plot, we calculate the percentage of variation that each principal component accounts for
 pct_variation = np.round(pca.explained_variance_ratio_ * 100, decimals=1)
 
-# prepare labels for the PCA graph
 labels = ["PC{}".format(x) for x in range(1, len(pct_variation) + 1)]
 
 # run scree plot to see how many principal components should go into the final plot
@@ -117,8 +64,10 @@ sorted_loading_scores = loading_scores.abs().sort_values(ascending=False)
 # get top features as a mask criteria for our dataframe
 top_features = sorted_loading_scores[:4].index.values
 
-# print the loading scores
-print(loading_scores[top_features])
-print("************")
 print(sorted_loading_scores)
-print(type(feature_columns))
+
+print(sorted_loading_scores[top_features])
+
+a = np.round(pca.explained_variance_ratio_ *100, decimals=2)
+b = pca.components_
+print("Eigenvalues for PC1\n{}\n".format(b[0]))
