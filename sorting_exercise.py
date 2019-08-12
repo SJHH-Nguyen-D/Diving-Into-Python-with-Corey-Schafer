@@ -11,13 +11,13 @@ planets = [
 ("Neptune", 24764, 1.64, 30.070)
 ]
 
-size = lambda planet: planet[1]
-density = lambda planet: planet[2]
-aus_from_sun = lambda planet: planet[3]
+size = lambda planets: planets[1]
+density = lambda planets: planets[2]
+aus_from_sun = lambda planets: planets[3]
 
 # Sort changes the list itself in place, thus changing the list itself
 # Tuples are immutable and therefore cannot be changed or sorted
-planets.sort(key=density, reverse=True)
+planets.sort(key=aus_from_sun, reverse=True)
 
 for i in planets:
 	print("{}\n".format(i))
@@ -28,5 +28,12 @@ for i in planets:
 
 pokemon = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise"]
 
+# print(help(dict))
+
 pokesort = sorted(pokemon)
 print(pokesort)
+
+pokedex_entry_num = list(range(1, len(pokemon)+1))
+
+pokemondict = dict(list(zip(pokedex_entry_num, pokemon)))
+print(pokemondict)
