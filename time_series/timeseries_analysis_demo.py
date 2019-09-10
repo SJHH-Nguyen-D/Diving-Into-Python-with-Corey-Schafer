@@ -151,7 +151,7 @@ def test_stationarity(ts, slidingwindow=12):
 
 # calculate the weighted average of the times series
 # this is to see the trend within the time series
-ts = load_dataset('./data/AirPassengers.csv')
+ts = load_dataset('../data/AirPassengers.csv')
 # stationized_ts = stationize_timeseries(log_process_ts(ts))
 log_ts = np.log(ts)
 exponentialdecayweightedaverage = log_ts.ewm(halflife=12, min_periods=0, adjust=True).mean()
