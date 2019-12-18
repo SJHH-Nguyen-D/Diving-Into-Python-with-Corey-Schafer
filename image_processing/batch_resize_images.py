@@ -1,8 +1,7 @@
 from PIL import Image
 import os, sys
 
-path = "/home/dennis/Desktop/Link to datascience_job_portfolio/images_to_resize_for_blog"
-
+path = os.getcwd()+os.sep+"images_to_resize_folder"
 
 def resize(directory):
     dirs = os.listdir(directory)
