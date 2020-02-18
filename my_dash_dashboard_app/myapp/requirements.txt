@@ -1,0 +1,5 @@
+flask
+dash
+gunicorn
+requests
+plotly
