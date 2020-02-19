@@ -17,3 +17,11 @@ instead of being a package with an __init__.py file.
 You can run with this command:
 
     gunicorn wsgi:application
+
+## Heroku Deployment
+
+Heroku dash application name is: 
+
+    https://sjhh-nguyen-d-dashapp.herokuapp.com/
+
+
