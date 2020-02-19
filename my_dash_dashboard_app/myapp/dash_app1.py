@@ -6,7 +6,7 @@ import dash_html_components as html
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
 app = dash.Dash(
-    __name__,
+    name=__name__,
     requests_pathname_prefix="/app1/",
     external_stylesheets=external_stylesheets,
 )
