@@ -5,9 +5,11 @@ from werkzeug.utils import secure_filename
 
 flask_app = Flask(__name__)
 
-@flask_app.route('/')
+
+@flask_app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
+
 
 # @flask_app.route('/login', methods=['POST', 'GET'])
 # def login():
@@ -52,5 +54,11 @@ def index():
 #         f = request.files['the_file']
 #         f.save('/var/www/uploads/' + secure_filename(f.filename))
 
-if __name__ == '__main__':
-    app.run_server(debug=True)  
+
+@flask_app.route("/registration", methods=["GET", "POST"])
+def register():
+    return render_template("registration.html")
+
+
+if __name__ == "__main__":
+    app.run_server(debug=True)
