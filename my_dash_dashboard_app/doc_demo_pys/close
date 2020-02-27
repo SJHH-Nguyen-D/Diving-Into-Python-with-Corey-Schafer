@@ -1,0 +1,69 @@
+Help on class Location in module dash_core_components.Location:
+
+class LLooccaattiioonn(dash.development.base_component.Component)
+ |  A Location component.
+ |  Update and track the current window.location object through the window.history state.
+ |  Use in conjunction with the `dash_core_components.Link` component to make apps with multiple pages.
+ |  
+ |  Keyword arguments:
+ |  - id (string; required): The ID of this component, used to identify dash components
+ |  in callbacks. The ID needs to be unique across all of the
+ |  components in an app.
+ |  - pathname (string; optional): pathname in window.location - e.g., "/my/full/pathname"
+ |  - search (string; optional): search in window.location - e.g., "?myargument=1"
+ |  - hash (string; optional): hash in window.location - e.g., "#myhash"
+ |  - href (string; optional): href in window.location - e.g., "/my/full/pathname?myargument=1#myhash"
+ |  - refresh (boolean; default True): Refresh the page when the location is updated?
+ |  
+ |  Method resolution order:
+ |      Location
+ |      dash.development.base_component.Component
+ |      __builtin__.object
+ |  
+ |  Methods defined here:
+ |  
+ |  ____iinniitt____ = wrapper(*args, **kwargs)
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |  
+ |  ____aabbssttrraaccttmmeetthhooddss____ = frozenset([])
+ |  
+ |  ----------------------------------------------------------------------
+ |  Methods inherited from dash.development.base_component.Component:
+ |  
+ |  ____ddeelliitteemm____(self, id)
+ |      Delete items by ID in the tree of children.
+ |  
+ |  ____ggeettiitteemm____(self, id)
+ |      Recursively find the element with the given ID through the tree
+ |      of children.
+ |  
+ |  ____iitteerr____(self)
+ |      Yield IDs in the tree of children.
+ |  
+ |  ____lleenn____(self)
+ |      Return the number of items in the tree.
+ |  
+ |  ____rreepprr____(self)
+ |  
+ |  ____sseettiitteemm____(self, id, item)
+ |      Set an element by its ID.
+ |  
+ |  ttoo__pplloottllyy__jjssoonn(self)
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data descriptors inherited from dash.development.base_component.Component:
+ |  
+ |  ____ddiicctt____
+ |      dictionary for instance variables (if defined)
+ |  
+ |  ____wweeaakkrreeff____
+ |      list of weak references to the object (if defined)
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes inherited from dash.development.base_component.Component:
+ |  
+ |  RREEQQUUIIRREEDD = required
+ |  
+ |  UUNNDDEEFFIINNEEDD = undefined

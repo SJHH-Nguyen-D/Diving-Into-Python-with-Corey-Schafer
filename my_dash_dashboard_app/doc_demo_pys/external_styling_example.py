@@ -1,7 +1,6 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from markdown_text import *
 
 # external JavaScript files
 external_scripts = [
@@ -32,18 +31,15 @@ app = dash.Dash(__name__,
 
 app.layout = html.Div([
     html.Div(
-        className="app-header",
-        children=[
-            html.Div('Plotly Dash', className="app-header--title")
-        ]
-    ),
-    html.Div(
         children=html.Div([
             html.H5('Overview'),
-            html.Div(explanation_text)
+            html.Div('''
+                This example makes use of the Image HTML tag as well as the use of external styling and javascript files which are read in before the local assets are.
+            ''')
         ])
     ),
-    html.Img(src="/assets/MHWI-Glavenus_Render_001.png")
+    html.Img(src="/assets/MHWI-Glavenus_Render_001.png"),
+    html.Img(src="/assets/multipage_app_layout.png"),
 ])
 
 if __name__ == '__main__':
