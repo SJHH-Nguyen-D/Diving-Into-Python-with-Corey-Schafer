@@ -16,13 +16,11 @@ class CustomDash(dash.Dash):
                 <title>My App</title>
             </head>
             <body>
-
-                <div id="custom-header">My custom header</div>
+                <img src='https://share.bannersnack.com/bdtjazvw5/' alt='site banner'>
                 {app_entry}
                 {config}
                 {scripts}
                 {renderer}
-                <div id="custom-footer">My custom footer</div>
             </body>
         </html>
         '''.format(
