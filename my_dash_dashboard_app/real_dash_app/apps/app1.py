@@ -3,7 +3,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 import pandas as pd
-import os, boto3, sys
+import os, sys #boto3
 
 # from constants import *
 from app import app
@@ -161,7 +161,7 @@ layout = html.Div([
 
 #     return df
 
-# the input channels for the callback function are positional from the decorator and piping directly into the function parameters
+##################################### DUMMY TEXT FUNCTION ###############################################
 @app.callback(
     Output(component_id='display-score', component_property='children'),
     [Input(component_id='firstname', component_property='value'),
@@ -189,20 +189,38 @@ def display_employee_summary(firstname, lastname, gender, cntrybrth, home_langua
 
 # in the mean time, we can just instantiate the model and predict (after having loaded the the weights in the .npy file)
 
-# @app.callback(
-#     Output(component_id='display-score', component_property='children'),
-#     [Input(component_id='firstname', component_property='value'),
-#     Input(component_id='lastname', component_property='value'),
-#     Input(component_id='gender_r', component_property='value'),
-#     Input(component_id='cnt_brth', component_property='value'),
-#     Input(component_id='lng_home', component_property='value'),
-#     Input(component_id='lng_ci', component_property='value'),
-#     Input(component_id='v92', component_property='value'),
-#     Input(component_id='influence', component_property='value'),
-#     Input(component_id='v1', component_property='value'),
-#     Input(component_id='v97', component_property='value')
-# def display_estimated_employee_performance_score(firstname, lastname, gender):
-#     return "Hello {} {}. I indentify as a {}".format(firstname, lastname, gender)
+def map_inputs_to_known_mapping(country_birth, lang_home, lang_ci, v92, influence, v1, v97):
+    cnt_brth = 0
+    lng_home = 0
+    lng_ci = 0
+
+    if country_birth == "":
+        cnt_brth = 1
+    else:
+        cnt_brth = 0
+    if lang_home == "":
+        lng_home = 1
+    else:
+        lng_home = 0
+
+
+    mapped_input = pd.Series([country_birth, lang_home, lang_ci, v92, influence, v1, v97])
+    return mapped_input
+
+@app.callback(
+    Output(component_id='display-score', component_property='children'),
+    [Input(component_id='cnt_brth', component_property='value'),
+    Input(component_id='lng_home', component_property='value'),
+    Input(component_id='lng_ci', component_property='value'),
+    Input(component_id='v92', component_property='value'),
+    Input(component_id='influence', component_property='value'),
+    Input(component_id='v1', component_property='value'),
+    Input(component_id='v97', component_property='value')])
+def display_estimated_employee_performance_score():
+    processed_input_mapping = map_inputs_to_known_mapping()
+    X_test = processed_input_mapping
+    predicted_employee_score = model.predict(X_test)
+    return "Your employee performance score is: {}".format(predicted_employee_score)
 ########################################################################################
 
 ##########################################################################################
