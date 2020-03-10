@@ -11,7 +11,7 @@ def send_async_email(app, msg):
 	We send the email as a background process
 	we need for the mail.send() method to know the configuration 
 	values for the email server, and you need to know about 
-	the application before hand for this.
+	the application before hand for this.s
 	the application context that is created with the with app.app_context()
 	call makes the application instance accessible via the current_app variable
 	from Flask.
