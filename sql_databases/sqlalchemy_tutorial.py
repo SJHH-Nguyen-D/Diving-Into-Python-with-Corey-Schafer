@@ -27,6 +27,8 @@ Session = sessionmaker(bind=engine)
 session = Session()
 users = session.query(User).all()
 for user in users:
-	print(user)
+	print("################################")
+	print("UserID: {}. Username: {}".format(user.id, user.name))
+	print("################################")
 
 session.close()
