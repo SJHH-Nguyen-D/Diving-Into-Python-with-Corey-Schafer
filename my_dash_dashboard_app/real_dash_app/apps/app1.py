@@ -2,6 +2,10 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
+import pandas as pd
+import os, boto3, sys
+
+# from constants import *
 from app import app
 
 layout = html.Div([
@@ -135,8 +139,27 @@ layout = html.Div([
     
 ])
 
+# def read_data():
+#     from io import StringIO # Python 3.x
 
+#     # get your credentials from environment variables
+#     os.environ['AWS_ID'] = aws_access_key_id
+#     aws_id = os.environ['AWS_ID']
+#     aws_secret = os.environ['AWS_SECRET']
 
+#     client = boto3.client('s3', aws_access_key_id=aws_id,
+#             aws_secret_access_key=aws_secret)
+
+#     bucket_name = BUCKET_NAME
+
+#     object_key = OBJECT_KEY
+#     csv_obj = client.get_object(Bucket=bucket_name, Key=object_key)
+#     body = csv_obj['Body']
+#     csv_string = body.read().decode('utf-8')
+
+#     df = pd.read_csv(StringIO(csv_string))
+
+#     return df
 
 # the input channels for the callback function are positional from the decorator and piping directly into the function parameters
 @app.callback(

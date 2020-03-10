@@ -3,7 +3,8 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 from flask import render_template
 
-from app import app
+# from app import app
+from app_copy import app
 from apps import app1, app2
 
 
@@ -11,7 +12,6 @@ app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content')
 ])
-
 
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
