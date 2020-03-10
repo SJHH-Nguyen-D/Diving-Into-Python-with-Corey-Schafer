@@ -1,0 +1,8 @@
+INFO 2019-06-20 00:23:57,538 - Our second message.
+DEBUG 2019-06-20 00:23:57,538 - This is a harmless debug message.
+WARNING 2019-06-20 00:23:57,538 - This is a warning message.
+ERROR 2019-06-20 00:23:57,538 - Some things are going terribly wrong!
+CRITICAL 2019-06-20 00:23:57,538 - This is a critical warning
+INFO 2019-06-20 00:23:57,538 - quadratic_formula(1, 0, 1)
+DEBUG 2019-06-20 00:23:57,538 - # Compute the discriminant
+DEBUG 2019-06-20 00:23:57,538 - # Compute the two roots
