@@ -1,0 +1,10 @@
+action: py37, msg: getenv
+cwd: /home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/unit_tests/my_sum_project_test/.tox
+cmd: /usr/bin/python3 -m virtualenv --no-download --python /usr/local/bin/python3.7 py37
+Already using interpreter /usr/local/bin/python3.7
+Using base prefix '/usr/local'
+New python executable in /home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/unit_tests/my_sum_project_test/.tox/py37/bin/python3.7
+Also creating executable in /home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/unit_tests/my_sum_project_test/.tox/py37/bin/python
+Installing setuptools, pip, wheel...
+done.
+Running virtualenv with interpreter /usr/local/bin/python3.7

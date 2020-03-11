@@ -1,0 +1,13 @@
+action: py36, msg: getenv
+cwd: /home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/unit_tests/my_sum_project_test
+cmd: /home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/unit_tests/my_sum_project_test/.tox/py36/bin/python -m pip install nose2
+Collecting nose2
+  Using cached https://files.pythonhosted.org/packages/b9/ad/27561695e863f5df064f1715864afb3ebe723a6e19e875eca85570e0a7cd/nose2-0.9.2-py2.py3-none-any.whl
+Collecting six>=1.7 (from nose2)
+  Using cached https://files.pythonhosted.org/packages/65/eb/1f97cb97bfc2390a276969c6fae16075da282f5058082d4cb10c6c5c1dba/six-1.14.0-py2.py3-none-any.whl
+Collecting coverage>=4.4.1 (from nose2)
+  Using cached https://files.pythonhosted.org/packages/6a/58/df86640436e28ca46fa5e93e603c82abb0cba309b37cbaec1e1188ea53a6/coverage-5.0.3-cp36-cp36m-manylinux1_x86_64.whl
+Installing collected packages: six, coverage, nose2
+Successfully installed coverage-5.0.3 nose2-0.9.2 six-1.14.0
+WARNING: You are using pip version 19.2.3, however version 20.0.2 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.

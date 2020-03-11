@@ -1,0 +1,6 @@
+action: py36, msg: envreport
+cwd: /home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/unit_tests/my_sum_project_test
+cmd: /home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/Dive_into_Python_with_Corey_Schafer/unit_tests/my_sum_project_test/.tox/py36/bin/python -m pip freeze
+coverage==5.0.3
+nose2==0.9.2
+six==1.14.0
