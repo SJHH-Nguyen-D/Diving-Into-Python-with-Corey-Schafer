@@ -67,6 +67,10 @@ This class tests your functions using specific test-base methods that you have c
 
 ## Running the Testing
 
+To run an individual test script:
+
+    `python3 -m unittest test.py`
+
 You can either run the tests in the command line with:
 
     `python3 -m unittest discover -s tests -v`
