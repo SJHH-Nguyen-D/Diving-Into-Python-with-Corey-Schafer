@@ -1,2 +1,4 @@
 tox
 nose2
+flake8
+bandit
