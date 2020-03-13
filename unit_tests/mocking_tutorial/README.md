@@ -1,0 +1,3 @@
+# About
+
+This directory explores the `unittest.mock.Mock class` and implementing mocking for fixtures across your test cases. It builds on top of what I've learned so far using the `unittest` testing framework but with a different test example. It will also further build upon my lessons learned from my *unit_tests/my_sum_project_test* folder with the inclusion of the `setUp` and `tearDown` methods, along with the accomponying `setUpClass` and `tearDownClass` class methods.
