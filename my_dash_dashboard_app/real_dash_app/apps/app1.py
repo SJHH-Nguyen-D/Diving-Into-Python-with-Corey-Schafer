@@ -139,28 +139,6 @@ layout = html.Div([
     
 ])
 
-# def read_data():
-#     from io import StringIO # Python 3.x
-
-#     # get your credentials from environment variables
-#     os.environ['AWS_ID'] = aws_access_key_id
-#     aws_id = os.environ['AWS_ID']
-#     aws_secret = os.environ['AWS_SECRET']
-
-#     client = boto3.client('s3', aws_access_key_id=aws_id,
-#             aws_secret_access_key=aws_secret)
-
-#     bucket_name = BUCKET_NAME
-
-#     object_key = OBJECT_KEY
-#     csv_obj = client.get_object(Bucket=bucket_name, Key=object_key)
-#     body = csv_obj['Body']
-#     csv_string = body.read().decode('utf-8')
-
-#     df = pd.read_csv(StringIO(csv_string))
-
-#     return df
-
 ##################################### DUMMY TEXT FUNCTION ###############################################
 @app.callback(
     Output(component_id='display-score', component_property='children'),
