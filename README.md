@@ -12,10 +12,12 @@ This list covers some of the subject areas that I've been meaning to learn when 
 
 ### Immediate
 
-* mocking
-* setup.py files
+* setup.py files and packaging
 * tracking pixels
 * ML experimentation organizaton frameworks
+* minimum viable test suite
+* mocking external dependencies/APIs
+* 
 
 ### Future
 
@@ -38,3 +40,5 @@ This list covers some of the subject areas that I've been meaning to learn when 
 * ~~CI/CD with travis-ci~~
 * ~~security detailing with bandit~~
 * ~~threading, multitasking, multithreading~~
+* ~~mocking~~
+
